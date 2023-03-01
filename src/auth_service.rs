@@ -27,7 +27,7 @@ impl<AuthRepo: AuthRepository + Debug, SessionRepo: SessionRepository + Debug>
         }
     }
 
-    #[instrument(level = "debug", ret)]
+    #[instrument(level = "trace", ret)]
     pub fn sign_up(&mut self, user_data: SignUpRequest) -> Result<Uuid, io::Error> {
         let SignUpRequest {
             username,
@@ -53,7 +53,7 @@ impl<AuthRepo: AuthRepository + Debug, SessionRepo: SessionRepository + Debug>
         Ok(id)
     }
 
-    #[instrument(level = "debug", ret)]
+    #[instrument(level = "trace", ret)]
     pub fn sign_in(&mut self, user_data: SignInRequest) -> Result<Uuid, io::Error> {
         tracing::debug!(auth_repo = ?self.auth_repo);
 
@@ -80,9 +80,8 @@ impl<AuthRepo: AuthRepository + Debug, SessionRepo: SessionRepository + Debug>
         Ok(session_id)
     }
 
+    #[instrument(level = "trace", ret)]
     pub fn profile(&self, session_id: &Uuid) -> Result<UserResponse, io::Error> {
-        tracing::debug!(?session_id, "SessionId");
-
         let session = self.session_repo.get_session(session_id)?;
 
         if session.expiration_date < OffsetDateTime::now_utc() {

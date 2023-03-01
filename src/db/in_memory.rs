@@ -25,12 +25,7 @@ impl AuthRepository for InMemoryAuthRepo {
     fn add_user(&mut self, user: User) -> Result<(), io::Error> {
         let id = user.id.clone();
 
-        tracing::debug!(?user, "users");
-
         self.users.insert(id, user);
-
-        tracing::debug!(users = ?self.users);
-        tracing::debug!(?self);
 
         Ok(())
     }
