@@ -38,7 +38,7 @@ impl<AuthRepo: AuthRepository + Debug, SessionRepo: SessionRepository + Debug>
         let id = Uuid::new_v4();
 
         let user = User {
-            id: id.clone(),
+            id,
             username,
             full_name,
             joined_at: OffsetDateTime::now_utc(),
@@ -69,7 +69,7 @@ impl<AuthRepo: AuthRepository + Debug, SessionRepo: SessionRepository + Debug>
         let session_id = Uuid::new_v4();
 
         let session = Session {
-            id: session_id.clone(),
+            id: session_id,
             user_id: user.id,
             expiration_date: OffsetDateTime::now_utc()
                 .checked_add(Duration::days(2))

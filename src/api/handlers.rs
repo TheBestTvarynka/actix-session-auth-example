@@ -30,10 +30,10 @@ pub async fn sign_in(
     app: web::Data<AppData>,
 ) -> impl Responder {
     match app.auth_service.lock().await.sign_in(sign_in_request.0) {
-        Ok(id) => {
+        Ok(session_id) => {
             let mut response = HttpResponse::Created();
 
-            response.cookie(Cookie::new("SessionId", id.to_string()));
+            response.cookie(Cookie::new("SessionId", session_id.to_string()));
 
             response.body(())
         }

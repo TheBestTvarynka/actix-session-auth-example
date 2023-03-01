@@ -21,9 +21,9 @@ impl AuthRepository for InMemoryAuthRepo {
             .ok_or_else(|| io::Error::new(io::ErrorKind::NotFound, "user not found"))
     }
 
-    #[instrument(level = "debug", ret)]
+    #[instrument(level = "debug", ret, fields(users = ?self.users, username = user.username), skip_all)]
     fn add_user(&mut self, user: User) -> Result<(), io::Error> {
-        let id = user.id.clone();
+        let id = user.id;
 
         self.users.insert(id, user);
 
@@ -36,8 +36,7 @@ impl AuthRepository for InMemoryAuthRepo {
 
         self.users
             .values()
-            .filter(|user| user.username == username)
-            .next()
+            .find(|user| user.username == username)
             .map(Clone::clone)
             .ok_or_else(|| io::Error::new(io::ErrorKind::NotFound, "user not found"))
     }
@@ -57,7 +56,7 @@ impl SessionRepository for InMemorySessionRepo {
     }
 
     fn add_session(&mut self, session: Session) -> Result<(), io::Error> {
-        let id = session.id.clone();
+        let id = session.id;
 
         self.sessions.insert(id, session);
 
